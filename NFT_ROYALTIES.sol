@@ -14,9 +14,9 @@ contract NFT is ERC721Enumerable, Ownable {
   uint256 public maxSupply = 10000;
   uint256 public maxMintAmount = 20;
   uint256 public nftPerAddressLimit = 3;
-  bool public paused = false;
-  bool public revealed = false;
-  bool public onlyWhitelisted = true;
+  bool public paused;
+  bool public revealed; 
+  bool public onlyWhitelisted;
   address payable commissions = payable(0xde3B22caAaD25e65C839c2A3d852d665669EdD5c);
   address[] public whitelistedAddresses;
   mapping(address => uint256) public addressMintedBalance;
@@ -29,6 +29,7 @@ contract NFT is ERC721Enumerable, Ownable {
   ) ERC721(_name, _symbol) {
     setBaseURI(_initBaseURI);
     setNotRevealedURI(_initNotRevealedUri);
+    onlyWhitelisted = true;
   }
   function _baseURI() internal view virtual override returns (string memory) {
     return baseURI;
@@ -109,11 +110,11 @@ contract NFT is ERC721Enumerable, Ownable {
     nftPerAddressLimit = _limit;
   }
   
-  function setCost(uint256 _newCost) public onlyOwner {
+  function changeCost(uint256 _newCost) public onlyOwner {
     cost = _newCost;
   }
 
-  function setmaxMintAmount(uint256 _newmaxMintAmount) public onlyOwner {
+  function changeMaxMintAmount(uint256 _newmaxMintAmount) public onlyOwner {
     maxMintAmount = _newmaxMintAmount;
   }
 
@@ -129,12 +130,12 @@ contract NFT is ERC721Enumerable, Ownable {
     notRevealedUri = _notRevealedURI;
   }
 
-  function pause(bool _state) public onlyOwner {
-    paused = _state;
+  function togglePause() public onlyOwner {
+    paused = !paused;
   }
   
-  function setOnlyWhitelisted(bool _state) public onlyOwner {
-    onlyWhitelisted = _state;
+  function toggleOnlyWhitelisted() public onlyOwner {
+    onlyWhitelisted = !onlyWhitelisted;
   }
   
   function whitelistUsers(address[] calldata _users) public onlyOwner {
